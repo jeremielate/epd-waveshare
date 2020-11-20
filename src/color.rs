@@ -13,19 +13,19 @@ pub use BinaryColor::On as Black;
 /// Only for the Black/White-Displays
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Color {
-    /// Black color
-    Black,
     /// White color
     White,
+    /// Black color
+    Black,
 }
 
 /// Only for the Black/White/Color-Displays
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum TriColor {
-    /// Black color
-    Black,
     /// White color
     White,
+    /// Black color
+    Black,
     /// Chromatic color
     Chromatic,
 }
@@ -33,10 +33,10 @@ pub enum TriColor {
 /// For the 5in65 7 Color Display
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum OctColor {
-    /// Black Color
-    Black = 0x00,
     /// White Color
-    White = 0x01,
+    White = 0x00,
+    /// Black Color
+    Black = 0x01,
     /// Green Color
     Green = 0x02,
     /// Blue Color
@@ -53,7 +53,7 @@ pub enum OctColor {
 
 impl From<()> for OctColor {
     fn from(_: ()) -> OctColor {
-        OctColor::White
+        OctColor::Black
     }
 }
 
@@ -75,8 +75,8 @@ impl OctColor {
     ///Take the nibble (lower 4 bits) and convert to an OctColor if possible
     pub fn from_nibble(nibble: u8) -> Result<OctColor, ()> {
         match nibble & 0xf {
-            0x00 => Ok(OctColor::Black),
-            0x01 => Ok(OctColor::White),
+            0x00 => Ok(OctColor::White),
+            0x01 => Ok(OctColor::Black),
             0x02 => Ok(OctColor::Green),
             0x03 => Ok(OctColor::Blue),
             0x04 => Ok(OctColor::Red),
@@ -95,8 +95,8 @@ impl OctColor {
     /// Converts to limited range of RGB values.
     pub fn rgb(self) -> (u8, u8, u8) {
         match self {
-            OctColor::White => (0xff, 0xff, 0xff),
-            OctColor::Black => (0x00, 0x00, 0x00),
+            OctColor::White => (0x00, 0x00, 0x00),
+            OctColor::Black => (0xff, 0xff, 0xff),
             OctColor::Green => (0x00, 0xff, 0x00),
             OctColor::Blue => (0x00, 0x00, 0xff),
             OctColor::Red => (0xff, 0x00, 0x00),
@@ -112,24 +112,24 @@ impl Color {
     /// Get the color encoding of the color for one bit
     pub fn get_bit_value(self) -> u8 {
         match self {
-            Color::White => 1u8,
-            Color::Black => 0u8,
+            Color::White => 0u8,
+            Color::Black => 1u8,
         }
     }
 
     /// Gets a full byte of black or white pixels
     pub fn get_byte_value(self) -> u8 {
         match self {
-            Color::White => 0xff,
-            Color::Black => 0x00,
+            Color::White => 0x00,
+            Color::Black => 0xff,
         }
     }
 
     /// Parses from u8 to Color
     fn from_u8(val: u8) -> Self {
         match val {
-            0 => Color::Black,
-            1 => Color::White,
+            0 => Color::White,
+            1 => Color::Black,
             e => panic!(
                 "DisplayColor only parses 0 and 1 (Black and White) and not `{}`",
                 e
@@ -160,8 +160,8 @@ mod tests {
 
     #[test]
     fn from_u8() {
-        assert_eq!(Color::Black, Color::from(0u8));
-        assert_eq!(Color::White, Color::from(1u8));
+        assert_eq!(Color::White, Color::from(0u8));
+        assert_eq!(Color::Black, Color::from(1u8));
     }
 
     // test all values aside from 0 and 1 which all should panic

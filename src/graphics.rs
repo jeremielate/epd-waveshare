@@ -74,11 +74,11 @@ pub trait Display: DrawTarget<BinaryColor> {
         match color {
             // Black
             BinaryColor::On => {
-                buffer[index] &= !bit;
+                buffer[index] |= bit;
             }
             // White
             BinaryColor::Off => {
-                buffer[index] |= bit;
+                buffer[index] &= !bit;
             }
         }
         Ok(())

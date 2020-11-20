@@ -66,16 +66,16 @@ where
         // and as per specs:
         // https://www.waveshare.com/w/upload/6/60/7.5inch_e-Paper_V2_Specification.pdf
 
-        self.cmd_with_data(spi, Command::BOOSTER_SOFT_START, &[0x17, 0x17, 0x27, 0x17])?;
+        // self.cmd_with_data(spi, Command::BOOSTER_SOFT_START, &[0x17, 0x17, 0x27, 0x17])?;
         self.cmd_with_data(spi, Command::POWER_SETTING, &[0x07, 0x17, 0x3F, 0x3F])?;
         self.command(spi, Command::POWER_ON)?;
         self.wait_until_idle();
         self.cmd_with_data(spi, Command::PANEL_SETTING, &[0x1F])?;
-        self.cmd_with_data(spi, Command::PLL_CONTROL, &[0x06])?;
+        // self.cmd_with_data(spi, Command::PLL_CONTROL, &[0x06])?;
         self.cmd_with_data(spi, Command::TCON_RESOLUTION, &[0x03, 0x20, 0x01, 0xE0])?;
         self.cmd_with_data(spi, Command::DUAL_SPI, &[0x00])?;
-        self.cmd_with_data(spi, Command::TCON_SETTING, &[0x22])?;
         self.cmd_with_data(spi, Command::VCOM_AND_DATA_INTERVAL_SETTING, &[0x10, 0x07])?;
+        self.cmd_with_data(spi, Command::TCON_SETTING, &[0x22])?;
         self.wait_until_idle();
         Ok(())
     }
@@ -160,12 +160,14 @@ where
         self.send_resolution(spi)?;
 
         self.command(spi, Command::DATA_START_TRANSMISSION_1)?;
-        self.interface.data_x_times(spi, 0x00, WIDTH * HEIGHT / 8)?;
+        self.interface.data_x_times(spi, 0x00, (WIDTH * HEIGHT) / 8)?;
 
         self.command(spi, Command::DATA_START_TRANSMISSION_2)?;
-        self.interface.data_x_times(spi, 0x00, WIDTH * HEIGHT / 8)?;
+        self.interface.data_x_times(spi, 0x00, (WIDTH * HEIGHT) / 8)?;
 
         self.command(spi, Command::DISPLAY_REFRESH)?;
+        // self.sleep(spi);
+        self.wait_until_idle();
         Ok(())
     }
 
